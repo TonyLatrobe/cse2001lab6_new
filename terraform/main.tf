@@ -1,7 +1,7 @@
 resource "kubernetes_pod" "test_pod" {
   metadata {
     name      = "security-test"
-    namespace = "test-ns"
+    namespace = ""
   }
 
   spec {
