@@ -1,0 +1,12 @@
+# Use a specific version (Passes 'Ensure internal package mirrors are used')
+# Test Checkov run (we prepull our images - so we don't need a dockerfile any more so this is only for show)
+FROM alpine:3.19
+
+# Create a non-root user (Passes 'Ensure that a user for the container has been created')
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Switch to that user (Passes 'Ensure the last USER is not root')
+USER appuser
+
+# Just a placeholder command
+CMD ["echo", "hello"]
