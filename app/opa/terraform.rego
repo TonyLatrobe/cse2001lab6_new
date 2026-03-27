@@ -1,6 +1,9 @@
 package terraform.security
 
 deny[msg] {
-  input.resource.kubernetes_pod[_].spec[_].metadata[_].namespace == ""
+  resource := input.resource_changes[_]
+  resource.type == "kubernetes_pod"
+  namespace := resource.change.after.metadata[_].namespace
+  namespace == ""
   msg := "Pod namespace cannot be empty"
 }

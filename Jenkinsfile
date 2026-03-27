@@ -65,7 +65,7 @@ pipeline {
                     sh '''
                             cd terraform
                             terraform init -input=false
-                            terraform plan -out=tfplan
+                            terraform plan -refresh=false -out=tfplan
                             terraform show -json tfplan > tfplan.json
 
                             DENY=$(opa eval --format raw \
