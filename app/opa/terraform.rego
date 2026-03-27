@@ -1,9 +1,9 @@
 package terraform.security
 
-# Deny empty namespaces
 deny[msg] {
-  input.resource_type == "kubernetes_namespace"
-  namespace := input.name
+  resource := input.resource_changes[_]
+  resource.type == "kubernetes_pod"
+  namespace := resource.change.after.metadata[_].namespace
   namespace == ""
-  msg := "Namespace name cannot be empty"
+  msg := "Namespace cannot be empty"
 }

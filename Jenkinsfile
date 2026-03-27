@@ -63,12 +63,22 @@ pipeline {
             steps {
                 container('ci') {
                     sh '''
-                        echo "Running OPA policy checks"
-                        opa eval \
-                          --format pretty \
-                          --data app/opa/terraform.rego \
-                          --input terraform/main.tf \
-                          "data.terraform.security"
+                            terraform plan -out=tfplan
+                            terraform show -json tfplan > tfplan.json
+
+                            DENY=$(opa eval \
+                            --format raw \
+                            --data app/opa/terraform.rego \
+                            --input tfplan.json \
+                            "data.terraform.security.deny")
+
+                            echo "OPA deny results: $DENY"
+
+                            if [ "$DENY" != "[]" ] && [ -n "$DENY" ]; then
+                            echo "OPA policy violations found! Failing build."
+                            exit 1
+                            fi
+
                     '''
                 }
             }
